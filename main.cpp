@@ -91,31 +91,35 @@ int main( int argc, char** argv )
     // cout << "pts = \n " << pts << "\n\n";
     // cout << "pts_MN_center_mn = \n " << pts_MN_center_mn << "\n\n";
     // cout << "pts_MN = \n " << pts_MN << "\n\n";
-    // cout << "pts_prop = \n " << pts_prop << "\n\n";
+    cout << "pts_prop = \n " << pts_prop << "\n\n";
 
     cv::Mat t_ptsh = (cv::Mat_<float>(3, 4) << 0.0, 240.0, 240.0, 0.0, 0.0, 0.0, 80.0, 80.0, 1.0, 1.0, 1.0, 1.0);
 
     float netw = 288.0;
     float neth = 288.0;
-    cv::Mat wh = (cv::Mat_<float>(4,4) << netw, netw, netw, netw, neth, neth, neth, neth,
-    	netw, netw, netw, netw, neth, neth, neth, neth,
-    	netw, netw, netw, netw, neth, neth, neth, neth,
-    	netw, netw, netw, netw, neth, neth, neth, neth);
+    cv::Mat wh = (cv::Mat_<float>(2,2) << netw, 0, 0, neth);
 
     cv::Mat cols = (cv::Mat_<float>(1,4) << 1.0, 1.0, 1.0, 1.0);
 
     // cout << "wh = \n " << wh << "\n\n";
-    cv::Mat ptsh = pts_prop * 288;
+    cv::Mat ptsh = pts_prop.t() * wh;
     // cout << "ptsh = \n " << ptsh << "\n\n";
     // cout << "cols = \n " << cols << "\n\n";
     cv::Mat out_ptsh;
 
-    cv::vconcat(ptsh, cols, out_ptsh);
+    cv::vconcat(ptsh.t(), cols, out_ptsh);
     // cout << "out_ptsh = \n " << out_ptsh << "\n\n";
 
     Mat H =  find_T_matrix(out_ptsh, t_ptsh);
 
     cout << "H = \n " << H << "\n\n";
+
+    // cout << "rows = \n " << H.rows << "\n\n";
+    // cout << "cols = \n " << H.cols << "\n\n";
+    // for (unsigned int i = 0; i < H.cols; i++)
+    // {
+    //     cout << H.at<float>(0, i) << ',';
+    // }
 
     return 0;
 }
